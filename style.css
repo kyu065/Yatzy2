@@ -1,0 +1,127 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    height: 100vh;
+    background: linear-gradient(#87cefa, #ffffff);
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    flex-direction: column;
+
+}
+
+header {
+    width: 100%;
+    background-color: #ffffff;
+    color: #000000;
+    text-align: center;
+    padding: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-size: 1.25rem;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.container {
+    text-align: center;
+}
+
+.logo{
+    width: 150px;
+    height: auto;
+    display: block;
+    margin: 0 auto 5px;
+}
+
+.score-board {
+    font-weight: 600;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-template-rows: repeat(3, 100px);
+    gap: 5px;
+    margin-bottom: 20px;
+}
+
+.cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    border: 1px solid #000;
+    font-size: 2rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    border-width: 2px;
+}
+
+.cell:hover {
+    background-color: #cad3d3; 
+    box-shadow: 0 0 0 4px #465d6280, inset 0 0 4px #519aac;
+}
+
+.cell.x {
+    background-color: #90EE90; /* Green for player X */
+}
+
+.cell.o {
+    background-color: #FFFFE0; /* Yellow for player O */
+}
+
+@keyframes flash {
+    0% { background-color: red; }
+    33% { background-color: green; }
+    66% { background-color: blue; }
+    100% { background-color: red; }
+}
+
+.cell.winner {
+    animation: flash 1s infinite;
+}
+
+h1 {
+    font-weight: 900;  
+}
+
+p {
+    font-weight: bold;
+}
+
+#result {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+#restart {
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+footer {
+    width: 100%;
+    background-color: #87cefa;
+    color: #000000;
+    text-align: center;
+    padding: 1rem;
+    margin-top: auto;
+    font-size: 1rem;
+}
