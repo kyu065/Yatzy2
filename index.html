@@ -10,12 +10,26 @@
     <header>
         <h1>Tic-Tac-Toe</h1>
     </header>
-    <main>    
+    <main>
         <div class="container">
             <img src="docs/assets/design_system/image.png" alt="Mascot" class="logo">
             <div class="score-board">
-                <div>Player X: <span id="scoreX">0</span></div>
-                <div>Player O: <span id="scoreO">0</span></div>        
+                <div>
+                    <span>Player X: </span>
+                    <span id="scoreX">0</span>
+                </div>
+                <div>
+                    <span>Player O: </span>
+                    <span id="scoreO">0</span>
+                </div>
+                <div>
+                    <span>Draws: </span>
+                    <span id="draws">0</span>
+                </div>
+                <div>
+                    <span>Total Score: </span>
+                    <span id="totalScore">0</span>
+                </div>
             </div>
             <div id="game-board" class="board">
                 <div class="cell" data-index="0"></div>
@@ -30,11 +44,11 @@
             </div>
             <div id="result" class="result"></div>
             <button id="restart">Restart Game</button>
+            <button id="viewLeaderboard">View Leaderboard</button> <!-- New button -->
         </div>
     </main>
-
     <footer>
-        <p> The following is 3x3 grid game where a player must match 3 symbols horizontally, vertically or diagonally</p>
+        <p>The following is a 3x3 grid game where a player must match 3 symbols horizontally, vertically, or diagonally.</p>
     </footer>
     <script src="script.js"></script>
 </body>

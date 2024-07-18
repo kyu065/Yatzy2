@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Leaderboard</h1>
+    </header>
+    <main>
+        <div class="leaderboard">
+            <h2>Top 10 Scores</h2>
+            <div id="leaderboardList"></div>
+        </div>
+        <button id="backToGame">Back to Game</button>
+    </main>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const leaderboardList = document.getElementById("leaderboardList");
+            const backToGameButton = document.getElementById("backToGame");
+
+            fetch('leaderboard.json')
+                .then(response => response.json())
+                .then(scores => {
+                    leaderboardList.innerHTML = scores.map(score => 
+                        `<div>${score.name}: ${score.score}</div>`
+                    ).join('');
+                })
+                .catch(error => {
+                    leaderboardList.textContent = "Error loading leaderboard.";
+                });
+
+            backToGameButton.addEventListener("click", () => {
+                window.location.href = 'index.html';
+            });
+        });
+    </script>
+</body>
+</html>
