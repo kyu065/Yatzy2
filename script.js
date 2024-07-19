@@ -155,32 +155,50 @@ document.addEventListener("DOMContentLoaded", () => {
         fetch('leaderboard.php', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: JSON.stringify({
-                action: 'update',
-                score: totalScore
-            })
+            body: `score=${totalScore}`
         })
         .then(response => response.json())
         .then(data => {
-            const scores = data.scores;
-            leaderboardDiv.innerHTML = '';
-            scores.forEach((score, index) => {
-                leaderboardDiv.innerHTML += `<div>Rank ${index + 1}: ${score}</div>`;
-            });
+            renderLeaderboard(data);
         })
         .catch(error => console.error('Error updating leaderboard:', error));
     }
 
-    function endGame() {
-        // Display final results and disable further interactions
-        displayResult("Game Over. Final Scores: Player X: " + scoreX + ", Player O: " + scoreO + ", Draws: " + draws);
-        cells.forEach(cell => cell.removeEventListener("click", handleClick));
+    function renderLeaderboard(scores) {
+        leaderboardDiv.innerHTML = "";
+        scores.forEach((score, index) => {
+            leaderboardDiv.innerHTML += `<div>Rank ${index + 1}: ${score}</div>`;
+        });
     }
 
-    restartButton.addEventListener("click", resetGame);
+    function endGame() {
+        displayResult("Game over. Restarting...");
+        setTimeout(() => {
+            roundCount = 0;
+            scoreX = 0;
+            scoreO = 0;
+            draws = 0;
+            totalScore = 0;
+            updateDisplay();
+            resetGame();
+        }, 2000);
+    }
 
-    // Initialize game
-    resetGame();
+    restartButton.addEventListener("click", () => {
+        resetGame();
+    });
+
+    document.getElementById("viewLeaderboard").addEventListener("click", () => {
+        fetch('leaderboard.php')
+        .then(response => response.json())
+        .then(data => {
+            renderLeaderboard(data);
+            leaderboardContainer.style.display = 'block';
+        })
+        .catch(error => console.error('Error fetching leaderboard:', error));
+    });
+
+    resetGame(); // Initialize the game on page load
 });
