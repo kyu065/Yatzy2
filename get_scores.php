@@ -1,8 +1,7 @@
 <?php
-// Read current scores
-$file = 'scores.json';
-$scores = file_exists($file) ? json_decode(file_get_contents($file), true) : [];
+include 'api.php'; // Include the api.php to use its functions
 
-// Return the scores
-echo json_encode($scores);
-?>
+echo json_encode([
+    'success' => true,
+    'scores' => getLeaderboard()
+]);

@@ -5,6 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tic Tac Toe</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .leaderboard-container {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 250px;
+            background: #f4f4f4;
+            border: 1px solid #ccc;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            height: 90vh;
+            z-index: 10;
+        }
+        
+        .leaderboard-container h2 {
+            margin-top: 0;
+            font-size: 1.25rem;
+        }
+        
+        .leaderboard-container div {
+            margin: 5px 0;
+            font-size: 1rem;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -44,7 +69,24 @@
             </div>
             <div id="result" class="result"></div>
             <button id="restart">Restart Game</button>
-            <button id="viewLeaderboard">View Leaderboard</button> <!-- New button -->
+            <button id="viewLeaderboard">View Leaderboard</button>
+      
+            <div id="leaderboardContainer" class="leaderboard-container">
+                <h2>Leaderboard</h2>
+                <div id="leaderboard">
+                    <!-- Placeholder  forleaderboard entries -->
+                    <div>Rank 1: 0</div>
+                    <div>Rank 2: 0</div>
+                    <div>Rank 3: 0</div>
+                    <div>Rank 4: 0</div>
+                    <div>Rank 5: 0</div>
+                    <div>Rank 6: 0</div>
+                    <div>Rank 7: 0</div>
+                    <div>Rank 8: 0</div>
+                    <div>Rank 9: 0</div>
+                    <div>Rank 10: 0</div>
+                </div>
+            </div>
         </div>
     </main>
     <footer>

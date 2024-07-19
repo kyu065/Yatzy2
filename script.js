@@ -2,12 +2,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const board = document.getElementById("game-board");
     const cells = document.querySelectorAll(".cell");
     const restartButton = document.getElementById("restart");
-    const viewLeaderboardButton = document.getElementById("viewLeaderboard");
     const resultDiv = document.getElementById("result");
     const scoreXDisplay = document.getElementById("scoreX");
     const scoreODisplay = document.getElementById("scoreO");
     const drawsDisplay = document.getElementById("draws");
     const totalScoreDisplay = document.getElementById("totalScore");
+    const leaderboardContainer = document.getElementById("leaderboardContainer");
+    const leaderboardDiv = document.getElementById("leaderboard");
 
     let currentPlayer = "X";
     let boardState = Array(9).fill(null);
@@ -132,115 +133,54 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function updateScore(player) {
         if (player === "X") {
-            scoreX++;
-            scoreXDisplay.textContent = scoreX;
-            totalScore += 10; // Win
+            scoreX += 10;
         } else if (player === "O") {
-            scoreO++;
-            scoreODisplay.textContent = scoreO;
-            totalScore -= 10; // Loss
-        } else if (player === 'Draw') {
+            scoreO += 10;
+        } else {
             draws++;
-            drawsDisplay.textContent = draws;
-            totalScore += 5; // Draw
         }
+        totalScore = scoreX + scoreO + (draws * 5);
+        updateLeaderboard();
+        updateDisplay();
+    }
+
+    function updateDisplay() {
+        scoreXDisplay.textContent = scoreX;
+        scoreODisplay.textContent = scoreO;
+        drawsDisplay.textContent = draws;
         totalScoreDisplay.textContent = totalScore;
     }
 
-    function endGame() {
-        displayResult(`Game Over! Final Score: ${totalScore}`);
-        cells.forEach(cell => cell.removeEventListener('click', handleClick)); // Disable further clicks
-
-        // Prompt for player's name and submit score
-        const playerName = prompt("Game Over! Enter your name to save your score:");
-        if (playerName) {
-            submitScore(playerName);
-            resetGameState()
-        } else {
-            resetGameState(); // If no name is entered, reset the game state immediately
-        }
-    }
-
-    function submitScore(playerName) {
-        fetch('save_score.php', {
+    function updateLeaderboard() {
+        fetch('leaderboard.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                name: playerName,
+                action: 'update',
                 score: totalScore
             })
         })
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
-                displayLeaderboard(data.scores); // Show the leaderboard
-                setTimeout(() => {
-                    resetGameState(); // Reset game state to initial
-                }, 3000); // Adjust the delay as needed
-            } else {
-                alert("Error saving score!");
-                resetGameState(); // Ensure game state is reset even on error
-            }
-        })
-        .catch(error => {
-            console.error("Error submitting score:", error);
-            alert("Error saving score!");
-            resetGameState(); // Ensure game state is reset even on error
-        });
-    }
-
-    function resetGameState() {
-        // Reset scores and round count
-        scoreX = 0;
-        scoreO = 0;
-        draws = 0;
-        totalScore = 0;
-        roundCount = 0;
-        scoreXDisplay.textContent = scoreX;
-        scoreODisplay.textContent = scoreO;
-        drawsDisplay.textContent = draws;
-        totalScoreDisplay.textContent = totalScore;
-
-        // Reset the game board
-        resetGame();
-    }
-
-    function displayLeaderboard(scores) {
-        const leaderboard = document.createElement('div');
-        leaderboard.className = 'leaderboard';
-        leaderboard.innerHTML = '<h2>Top 10 Scores</h2>' + 
-            scores.map(score => `<div>${score.name}: ${score.score}</div>`).join('');
-        document.body.appendChild(leaderboard);
-    }
-
-    function getScores() {
-        fetch('get_scores.php')
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    displayLeaderboard(data.scores); // Display the leaderboard
-                } else {
-                    alert("Error retrieving scores!");
-                }
-            })
-            .catch(error => {
-                console.error("Error fetching scores:", error);
-                alert("Error retrieving scores!");
+            const scores = data.scores;
+            leaderboardDiv.innerHTML = '';
+            scores.forEach((score, index) => {
+                leaderboardDiv.innerHTML += `<div>Rank ${index + 1}: ${score}</div>`;
             });
+        })
+        .catch(error => console.error('Error updating leaderboard:', error));
     }
 
-    // Event listener for leaderboard button
-    viewLeaderboardButton.addEventListener('click', () => {
-        getScores(); // Fetch scores and display leaderboard
-    });
+    function endGame() {
+        // Display final results and disable further interactions
+        displayResult("Game Over. Final Scores: Player X: " + scoreX + ", Player O: " + scoreO + ", Draws: " + draws);
+        cells.forEach(cell => cell.removeEventListener("click", handleClick));
+    }
 
-    // Event listener for restart button
-    restartButton.addEventListener("click", () => {
-        resetGame();
-    });
+    restartButton.addEventListener("click", resetGame);
 
-    // Initial setup
-    cells.forEach(cell => cell.addEventListener("click", handleClick));
+    // Initialize game
+    resetGame();
 });

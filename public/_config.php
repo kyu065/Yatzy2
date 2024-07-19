@@ -8,6 +8,8 @@ function resolve_path($name)
     {
         $publicRoot = $_SERVER["DOCUMENT_ROOT"] . "/..";
         $appRoot = $_SERVER["DOCUMENT_ROOT"];
+
+        
     }
     else if ($_SERVER["DOCUMENT_ROOT"] != "")
     {
@@ -15,6 +17,7 @@ function resolve_path($name)
         $appRoot = $_SERVER["DOCUMENT_ROOT"] . "/$name";
     }
     else
+
     {
         return "../{$name}";
     }
@@ -28,6 +31,7 @@ spl_autoload_register(function ($fullName) {
     $className = $parts[$len - 1];
     if (file_exists($GLOBALS["appDir"] . "/models/{$className}.php"))
     {
+
       require_once $GLOBALS["appDir"] . "/models/{$className}.php";
     }
 });
