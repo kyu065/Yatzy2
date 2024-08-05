@@ -124,10 +124,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         cells.forEach(cell => cell.addEventListener("click", handleClick)); // Reattach event listeners
 
-        if (roundCount >= maxRounds) {
-            endGame();
-        } else {
-            roundCount++;
+        roundCount++;
+        if (roundCount > maxRounds) {
+            roundCount = 1;  // Reset round count
+            updateLeaderboard();
         }
     }
 
@@ -140,7 +140,6 @@ document.addEventListener("DOMContentLoaded", () => {
             draws++;
         }
         totalScore = scoreX + scoreO + (draws * 5);
-        updateLeaderboard();
         updateDisplay();
     }
 
@@ -152,31 +151,39 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function updateLeaderboard() {
-        fetch('leaderboard.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: `score=${totalScore}`
-        })
-        .then(response => response.json())
-        .then(data => {
-            renderLeaderboard(data);
-        })
-        .catch(error => console.error('Error updating leaderboard:', error));
+        const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+        leaderboard.push({ name: 'Player', score: totalScore });
+
+        leaderboard.sort((a, b) => b.score - a.score);
+
+        while (leaderboard.length > 10) {
+            leaderboard.pop();
+        }
+
+        localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+        renderLeaderboard(leaderboard);
+
+        // Reset scores after adding to leaderboard
+        scoreX = 0;
+        scoreO = 0;
+        draws = 0;
+        totalScore = 0;
+        updateDisplay();
     }
 
     function renderLeaderboard(scores) {
-        leaderboardDiv.innerHTML = "";
+        const leaderboardEntries = leaderboardDiv.querySelectorAll("div");
         scores.forEach((score, index) => {
-            leaderboardDiv.innerHTML += `<div>Rank ${index + 1}: ${score}</div>`;
+            if (index < leaderboardEntries.length) {
+                leaderboardEntries[index].textContent = `Rank ${index + 1}: ${score.score}`;
+            }
         });
     }
 
     function endGame() {
         displayResult("Game over. Restarting...");
         setTimeout(() => {
-            roundCount = 0;
+            roundCount = 1;
             scoreX = 0;
             scoreO = 0;
             draws = 0;
@@ -191,13 +198,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     document.getElementById("viewLeaderboard").addEventListener("click", () => {
-        fetch('leaderboard.php')
-        .then(response => response.json())
-        .then(data => {
-            renderLeaderboard(data);
-            leaderboardContainer.style.display = 'block';
-        })
-        .catch(error => console.error('Error fetching leaderboard:', error));
+        const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+        renderLeaderboard(leaderboard);
+        leaderboardContainer.style.display = 'block';
     });
 
     resetGame(); // Initialize the game on page load
